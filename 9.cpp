@@ -1,8 +1,19 @@
 #include <cstdio>
+#include <map>
+
+int n, m;
+double x[10][2000];
+int maxmatch[1000];
+std::map<long long, int> map;
+int trans[1000][100];
+double f[2000][1000];
+int bitcount[100];
+double xx[2000][100];
+double ans;
+int knum;
 
 void dfs(int pos, long long cas)
 {
-	vis[pos] = 1;
 	maxmatch[pos] = 0;
 	for (int i = 0; i < (1 << n); i++)
 	{
@@ -20,7 +31,7 @@ void dfs(int pos, long long cas)
 			{
 				for (int k = 0; k < (1 << n); k++)
 				{
-					if (cas & (1 << k))
+					if (cas & (1ll << k))
 					{
 						newcas = newcas | (1ll << (k | (1 << (j - 1))));
 					}
@@ -28,10 +39,18 @@ void dfs(int pos, long long cas)
 			}
 		}
 		int newpos = map[newcas];
-		if (! vis[newpos])
+		if (! newpos)
 		{
+			knum++;
+			map[newcas] = knum;
+			newpos = knum;
 			dfs(newpos, newcas);
 		}
+		else
+		{
+			newpos = map[newcas];
+		}
+		trans[pos][i] = newpos;
 	}
 }
 
@@ -71,4 +90,22 @@ int main()
 	knum = 1;
 	map[1] = 1;
 	dfs(1, 1);
+	f[0][1] = 1.0;
+	for (int i = 1; i <= m; i++)
+	{
+		for (int j = 1; j <= knum; j++)
+		{
+			for (int k = 0; k < (1 << n); k++)
+			{
+				f[i][trans[j][k]] += f[i - 1][j] * xx[i][k];
+			}
+		}
+	}
+	ans = 0.0;
+	for (int i = 1; i <= knum; i++)
+	{
+		ans = ans + f[m][i] * maxmatch[i];
+	}
+	printf("%.6f\n", ans);
+	return 0;
 }
