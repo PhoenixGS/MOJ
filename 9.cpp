@@ -78,11 +78,11 @@ int main()
 			{
 				if (j & (1 << (k - 1)))
 				{
-					xx[i][j] = xx[i][j] * x[i][k];
+					xx[i][j] = xx[i][j] * x[k][i];
 				}
 				else
 				{
-					xx[i][j] = xx[i][j] * (1.0 - x[i][k]);
+					xx[i][j] = xx[i][j] * (1.0 - x[k][i]);
 				}
 			}
 		}
